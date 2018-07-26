@@ -283,3 +283,127 @@ FROM
     film f ON (i.film_id = f.film_id)
 GROUP BY f.title
 ORDER BY `Rentals` DESC;
+
+-- 7f. Write a query to display how much business, in dollars, each store brought in.
+
+SELECT 
+    s.store_id, SUM(amount) AS 'Revenue'
+FROM
+    payment p
+        JOIN
+    rental r ON (p.rental_id = r.rental_id)
+        JOIN
+    inventory i ON (i.inventory_id = r.inventory_id)
+        JOIN
+    store s ON (s.store_id = i.store_id)
+GROUP BY s.store_id; 
+
+-- 7g. Write a query to display for each store its store ID, city, and country.
+
+SELECT 
+    s.store_id, cty.city, country.country
+FROM
+    store s
+        JOIN
+    address a ON (s.address_id = a.address_id)
+        JOIN
+    city cty ON (cty.city_id = a.city_id)
+        JOIN
+    country ON (country.country_id = cty.country_id);
+
+-- 7h. List the top five genres in gross revenue in descending order. (Hint: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+
+SELECT 
+    c.name AS 'Genre', SUM(p.amount) AS 'Gross'
+FROM
+    category c
+        JOIN
+        
+    film_category fc ON (c.category_id = fc.category_id)
+        JOIN
+        
+    inventory i ON (fc.film_id = i.film_id)
+        JOIN
+        
+    rental r ON (i.inventory_id = r.inventory_id)
+        JOIN
+        
+    payment p ON (r.rental_id = p.rental_id)
+    
+GROUP BY c.name
+
+ORDER BY Gross
+LIMIT 10;
+
+-- 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+
+
+CREATE VIEW genre_revenue AS
+
+SELECT 
+    c.name AS 'Genre', SUM(p.amount) AS 'Gross'
+FROM
+    category c
+        JOIN
+        
+    film_category fc ON (c.category_id = fc.category_id)
+        JOIN
+        
+    inventory i ON (fc.film_id = i.film_id)
+        JOIN
+        
+    rental r ON (i.inventory_id = r.inventory_id)
+        JOIN
+        
+    payment p ON (r.rental_id = p.rental_id)
+    
+GROUP BY c.name
+
+ORDER BY Gross
+LIMIT 10;
+
+-- 8b. How would you display the view that you created in 8a?
+
+
+CREATE VIEW genre_revenue AS
+
+SELECT 
+    c.name AS 'Genre', SUM(p.amount) AS 'Gross'
+FROM
+    category c
+        JOIN
+        
+    film_category fc ON (c.category_id = fc.category_id)
+        JOIN
+        
+    inventory i ON (fc.film_id = i.film_id)
+        JOIN
+        
+    rental r ON (i.inventory_id = r.inventory_id)
+        JOIN
+        
+    payment p ON (r.rental_id = p.rental_id)
+    
+GROUP BY c.name
+
+ORDER BY Gross
+LIMIT 10;
+
+SELECT * FROM genre_revenue;
+
+
+-- 8c. You find that you no longer need the view top_five_genres. Write a query to delete it.
+
+
+DROP VIEW genre_revenue;
+
+
+
+
+
+
+
+
+
+
+
